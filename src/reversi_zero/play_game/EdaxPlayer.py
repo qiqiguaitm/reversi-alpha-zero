@@ -7,9 +7,9 @@ import json
 import copy
 import sys
 
-
+PROJ_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
 class EdaxPlayer(object):
-    def __init__(self, engine_path='/home/qiqiguaitm/Didi/games/edax/4.3/bin/lEdax', time_per_move=1,
+    def __init__(self, engine_path=os.path.join(PROJ_DIR,'edax/4.3/bin/lEdax'), time_per_move=1,
                  search_depth=4,debug=False):
         # default values for settings
         self.settings = {
