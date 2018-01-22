@@ -1,6 +1,7 @@
 import os
 from logging import getLogger
-
+import shutil
+import time
 
 logger = getLogger(__name__)
 
@@ -20,7 +21,12 @@ def save_as_best_model(model):
     :param reversi_zero.agent.model.ReversiModel model:
     :return:
     """
-    return model.save(model.config.resource.model_best_config_path, model.config.resource.model_best_weight_path)
+    tmp_config_path = model.config.resource.model_best_config_path + str(int(time.time()))
+    tmp_weight_path = model.config.resource.model_best_weight_path + str(int(time.time()))
+    model.save(tmp_config_path,tmp_weight_path)
+    shutil.move(tmp_config_path,model.config.resource.model_best_config_path)
+    shutil.move(tmp_weight_path,model.config.resource.model_best_weight_path)
+    return 
 
 
 def reload_best_model_weight_if_changed(model):

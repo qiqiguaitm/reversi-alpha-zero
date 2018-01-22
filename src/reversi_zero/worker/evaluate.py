@@ -48,7 +48,10 @@ class EvaluateWorker:
         winning_rate = 0
         for game_idx in range(self.config.eval.game_num):
             # ng_win := if ng_model win -> 1, lose -> 0, draw -> None
-            ng_win, black_is_best, black_white = self.play_game(self.best_model, ng_model)
+            try:
+                ng_win, black_is_best, black_white = self.play_game(self.best_model, ng_model)
+            except:
+                continue
             if ng_win is not None:
                 results.append(ng_win)
                 winning_rate = sum(results) / len(results)
@@ -98,7 +101,7 @@ class EvaluateWorker:
                 ng_win = 1
             else:
                 ng_win = 0
-        print(board_to_string(observation.black, observation.white))
+        #print(board_to_string(observation.black, observation.white))
         return ng_win, best_is_black, observation.number_of_black_and_white
 
     def load_best_model(self):
