@@ -34,7 +34,10 @@ class EvaluateWorker:
         self.best_model = self.load_best_model()
 
         while True:
-            ng_model, model_dir = self.load_next_generation_model()
+            try:
+                ng_model, model_dir = self.load_next_generation_model()
+            except:
+                continue
             logger.debug(f"start evaluate model {model_dir}")
             ng_is_great = self.evaluate_model(ng_model)
             if ng_is_great:
