@@ -105,6 +105,7 @@ class EvaluateWorker:
             else:
                 ng_win = 0
         #print(board_to_string(observation.black, observation.white))
+        best_player.close()
         return ng_win, best_is_black, observation.number_of_black_and_white
 
     def load_best_model(self):
