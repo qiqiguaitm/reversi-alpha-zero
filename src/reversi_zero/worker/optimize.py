@@ -38,7 +38,7 @@ class OptimizeWorker:
 
     def start(self):
         self.model = self.load_model()
-        self.model.model = multi_gpu_model(self.model.model, gpus=4)
+        self.model.multi_model = multi_gpu_model(self.model.model, gpus=4)
         self.training()
 
     def training(self):
@@ -71,7 +71,7 @@ class OptimizeWorker:
     def train_epoch(self, epochs, callbacks):
         tc = self.config.trainer
         state_ary, policy_ary, z_ary = self.dataset
-        self.model.model.fit(state_ary, [policy_ary, z_ary],
+        self.model.multi_model.fit(state_ary, [policy_ary, z_ary],
                              batch_size=tc.batch_size,
                              callbacks=callbacks,
                              epochs=epochs)
@@ -81,7 +81,7 @@ class OptimizeWorker:
     def compile_model(self):
         self.optimizer = SGD(lr=1e-2, momentum=0.9)
         losses = [objective_function_for_policy, objective_function_for_value]
-        self.model.model.compile(optimizer=self.optimizer, loss=losses)
+        self.model.multi_model.compile(optimizer=self.optimizer, loss=losses)
 
     def update_learning_rate(self, total_steps):
         # The deepmind paper says
@@ -120,6 +120,7 @@ class OptimizeWorker:
         os.makedirs(tmp_model_dir, exist_ok=True)
         config_path = os.path.join(tmp_model_dir, rc.next_generation_model_config_filename)
         weight_path = os.path.join(tmp_model_dir, rc.next_generation_model_weight_filename)
+        self.model.model.set_weights(self.model.multi_model.get_weights())
         self.model.save(config_path, weight_path)
         shutil.move(tmp_model_dir,model_dir)
 
