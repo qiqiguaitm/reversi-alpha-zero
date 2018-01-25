@@ -3,7 +3,7 @@ class EvaluateConfig:
         self.game_num = 200  # 400
         self.replace_rate = 0.55
         self.play_config = PlayConfig()
-        self.play_config.simulation_num_per_move = 400
+        self.play_config.simulation_num_per_move = 1600
         self.play_config.thinking_loop = 1
         self.play_config.change_tau_turn = 0
         self.play_config.noise_eps = 0
@@ -21,7 +21,7 @@ class PlayDataConfig:
 
 class PlayConfig:
     def __init__(self):
-        self.simulation_num_per_move = 400
+        self.simulation_num_per_move = 1600
         self.share_mtcs_info_in_self_play = True
         self.reset_mtcs_info_per_game = 10
         self.thinking_loop = 1

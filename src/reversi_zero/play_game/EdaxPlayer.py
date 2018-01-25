@@ -9,8 +9,8 @@ import sys
 
 PROJ_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
 class EdaxPlayer(object):
-    def __init__(self, engine_path=os.path.join(PROJ_DIR,'edax/4.3/bin/lEdax'), time_per_move=1,
-                 search_depth=4,debug=False):
+    def __init__(self, engine_path=os.path.join(PROJ_DIR,'edax/4.3/bin/lEdax'), time_per_move=5,
+                 search_depth=15,debug=False):
         # default values for settings
         self.settings = {
             "enginepath": engine_path,
