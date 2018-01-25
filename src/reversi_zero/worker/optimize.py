@@ -37,7 +37,8 @@ class OptimizeWorker:
         self.optimizer = None
 
     def start(self):
-        self.model = self.load_model()
+        with tf.device("/cpu:0"):
+            self.model = self.load_model()
         self.model.multi_model = multi_gpu_model(self.model.model, gpus=4)
         self.training()
 
