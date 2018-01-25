@@ -38,7 +38,7 @@ class OptimizeWorker:
 
     def start(self):
         self.model = self.load_model()
-        self.model = multi_gpu_model(self.model, gpus=4)
+        self.model.model = multi_gpu_model(self.model.model, gpus=4)
         self.training()
 
     def training(self):
