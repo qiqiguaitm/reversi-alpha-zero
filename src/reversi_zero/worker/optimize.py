@@ -8,7 +8,7 @@ import keras.backend as K
 import numpy as np
 from keras.callbacks import Callback
 from keras.optimizers import SGD
-
+from keras.utils import multi_gpu_model
 from reversi_zero.agent.model import ReversiModel, objective_function_for_policy, \
     objective_function_for_value
 from reversi_zero.config import Config
@@ -38,6 +38,7 @@ class OptimizeWorker:
 
     def start(self):
         self.model = self.load_model()
+        self.model = multi_gpu_model(self.model, gpus=4)
         self.training()
 
     def training(self):
