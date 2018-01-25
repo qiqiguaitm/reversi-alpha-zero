@@ -43,28 +43,42 @@ class SelfPlayWorker:
             self.model = self.load_model()
 
         self.buffer = []
-        idx = 1
+        idx = self.read_as_int(self.config.resource.self_play_game_idx_file) or 1
+        mtcs_info = None
 
         while True:
             start_time = time()
-            env = self.start_game(idx)
+            if mtcs_info is None and self.config.play.share_mtcs_info_in_self_play:
+                mtcs_info = ReversiPlayer.create_mtcs_info()
+            env = self.start_game(idx, mtcs_info)
             end_time = time()
             logger.debug(f"play game {idx} time={end_time - start_time} sec, "
-                         f"turn={env.turn}:{env.board.number_of_black_and_white}")
-            if True or (idx % self.config.play_data.nb_game_in_file) == 0:
+                         f"turn={env.turn}:{env.board.number_of_black_and_white}:{env.winner}")
+
+            try:
                 if self.config.play.use_newest_next_generation_model:
-                    reload_newest_next_generation_model_if_changed(self.model)
+                    reload_newest_next_generation_model_if_changed(self.model, clear_session=True)
                 else:
-                    if reload_best_model_weight_if_changed(self.model):
-                        self.reset_false_positive_count()
+                    reload_best_model_weight_if_changed(self.model, clear_session=True)
+
+            except Exception as e:
+                logger.error(e)
+
+            if idx % self.config.play.reset_mtcs_info_per_game == 0:
+                logger.debug("reset MTCS info")
+                mtcs_info = None
 
             idx += 1
+            with open(self.config.resource.self_play_game_idx_file, "wt") as f:
+                f.write(str(idx))
 
-    def start_game(self, idx):
+    def start_game(self, idx, mtcs_info):
         self.env.reset()
         enable_resign = self.config.play.disable_resignation_rate <= random()
-        self.black = ReversiPlayer(self.config, self.model, enable_resign=enable_resign)
-        self.white = ReversiPlayer(self.config, self.model, enable_resign=enable_resign)
+        self.config.play.simulation_num_per_move = self.decide_simulation_num_per_move(idx)
+        logger.debug(f"simulation_num_per_move = {self.config.play.simulation_num_per_move}")
+        self.black = ReversiPlayer(self.config, self.model, enable_resign=enable_resign, mtcs_info=mtcs_info)
+        self.white = ReversiPlayer(self.config, self.model, enable_resign=enable_resign, mtcs_info=mtcs_info)
         if not enable_resign:
             logger.debug("Resignation is disabled in the next game.")
         observation = self.env.observation  # type: Board
@@ -158,3 +172,26 @@ class SelfPlayWorker:
             self.config.play.resign_threshold += self.config.play.resign_threshold_delta
         logger.debug(f"update resign_threshold: {old_threshold} -> {self.config.play.resign_threshold}")
         self.reset_false_positive_count()
+
+    def decide_simulation_num_per_move(self, idx):
+        ret = self.read_as_int(self.config.resource.force_simulation_num_file)
+
+        if ret:
+            logger.debug(f"loaded simulation num from file: {ret}")
+            return ret
+
+        for min_idx, num in self.config.play.schedule_of_simulation_num_per_move:
+            if idx >= min_idx:
+                ret = num
+        return ret
+
+    def read_as_int(self, filename):
+        if os.path.exists(filename):
+            try:
+                with open(filename, "rt") as f:
+                    ret = int(str(f.read()).strip())
+                    if ret:
+                        return ret
+            except ValueError:
+                pass
+

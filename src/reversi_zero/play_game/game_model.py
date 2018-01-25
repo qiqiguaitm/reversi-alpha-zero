@@ -7,6 +7,7 @@ from reversi_zero.config import Config
 from reversi_zero.env.reversi_env import Player, ReversiEnv
 from reversi_zero.lib.bitboard import find_correct_moves
 from reversi_zero.lib.model_helpler import load_best_model_weight, reload_newest_next_generation_model_if_changed
+from reversi_zero.play_game.common import load_model
 from reversi_zero.play_game.EdaxPlayer import *
 
 logger = getLogger(__name__)
@@ -38,6 +39,7 @@ class PlayWithHuman:
         self.ai = ReversiPlayer(self.config, self.model)
         self.edax_player = EdaxPlayer()
         self.act = None
+
 
     def play_next_turn(self):
         self.notify_all(GameEvent.update)
@@ -85,9 +87,9 @@ class PlayWithHuman:
     def move(self, px, py, use_edax=False):
         pos = int(py * 8 + px)
         assert 0 <= pos < 64
+
         if self.next_player != self.human_color:
             return False
-
         if use_edax:
             logger.debug(f"edax thinking,current act {self.act}...")
             '''
@@ -103,18 +105,11 @@ class PlayWithHuman:
             logger.debug("edax steped...")
             self.act = 'pass'
             self.env.step(pos)
+        else:
+            self.env.step(pos)
 
     def _load_model(self):
-        from reversi_zero.agent.model import ReversiModel
-        model = ReversiModel(self.config)
-        if self.config.play.use_newest_next_generation_model:
-            loaded = reload_newest_next_generation_model_if_changed(model) or load_best_model_weight(model)
-        else:
-            loaded = \
-                (model) or reload_newest_next_generation_model_if_changed(model)
-        if not loaded:
-            raise RuntimeError("No models found!")
-        return model
+        return load_model(self.config)
 
     def move_by_ai(self):
         if self.next_player == self.human_color:
@@ -124,6 +119,7 @@ class PlayWithHuman:
         action = self.ai.action(own, enemy)
         self.env.step(action)
         self.act = action
+
         self.last_history = self.ai.ask_thought_about(own, enemy)
         self.last_evaluation = self.last_history.values[self.last_history.action]
         logger.debug(f"evaluation by ai={self.last_evaluation}")
@@ -134,3 +130,5 @@ class PlayWithHuman:
         else:
             own, enemy = self.env.board.white, self.env.board.black
         return own, enemy
+
+

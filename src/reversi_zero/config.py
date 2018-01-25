@@ -15,6 +15,7 @@ class Config:
         self.opts = Options()
         self.resource = ResourceConfig()
         self.gui = GuiConfig()
+        self.nboard = NBoardConfig()
 
         if config_type == "mini":
             import reversi_zero.configs.mini as c
@@ -52,6 +53,9 @@ class ResourceConfig:
         self.log_dir = os.path.join(self.project_dir, "logs")
         self.main_log_path = os.path.join(self.log_dir, "main.log")
         self.tensorboard_log_dir = os.path.join(self.log_dir, 'tensorboard')
+        self.force_learing_rate_file = os.path.join(self.data_dir, ".force-lr")
+        self.force_simulation_num_file = os.path.join(self.data_dir, ".force-sim")
+        self.self_play_game_idx_file = os.path.join(self.data_dir, ".self-play-game-idx")
 
     def create_directories(self):
         dirs = [self.project_dir, self.data_dir, self.model_dir, self.play_data_dir, self.log_dir,
@@ -69,7 +73,7 @@ class GuiConfig:
 
 class PlayWithHumanConfig:
     def __init__(self):
-        self.simulation_num_per_move = 400
+        self.simulation_num_per_move = 100
         self.thinking_loop = 1
         self.logging_thinking = True
         self.c_puct = 1
@@ -94,3 +98,11 @@ class PlayWithHumanConfig:
         pc.parallel_search_num = self.parallel_search_num
         pc.resign_threshold = self.resign_threshold
         pc.use_newest_next_generation_model = self.use_newest_next_generation_model
+
+
+class NBoardConfig:
+    def __init__(self):
+        self.my_name = "RAZ"
+        self.read_stdin_timeout = 0.1
+        self.simulation_num_per_depth_about = 20
+        self.hint_callback_per_sim = 10

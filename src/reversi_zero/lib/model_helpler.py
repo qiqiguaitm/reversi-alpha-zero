@@ -1,17 +1,21 @@
 import os
 from logging import getLogger
+import keras.backend as K
 import shutil
 import time
 
 logger = getLogger(__name__)
 
 
-def load_best_model_weight(model):
+def load_best_model_weight(model, clear_session=False):
     """
 
     :param reversi_zero.agent.model.ReversiModel model:
+    :param bool clear_session:
     :return:
     """
+    if clear_session:
+        K.clear_session()
     return model.load(model.config.resource.model_best_config_path, model.config.resource.model_best_weight_path)
 
 
@@ -26,28 +30,29 @@ def save_as_best_model(model):
     model.save(tmp_config_path,tmp_weight_path)
     shutil.move(tmp_config_path,model.config.resource.model_best_config_path)
     shutil.move(tmp_weight_path,model.config.resource.model_best_weight_path)
-    return 
+    return
 
-
-def reload_best_model_weight_if_changed(model):
+def reload_best_model_weight_if_changed(model, clear_session=False):
     """
 
     :param reversi_zero.agent.model.ReversiModel model:
+    :param bool clear_session:
     :return:
     """
     logger.debug(f"start reload the best model if changed")
     digest = model.fetch_digest(model.config.resource.model_best_weight_path)
     if digest != model.digest:
-        return load_best_model_weight(model)
+        return load_best_model_weight(model, clear_session=clear_session)
 
     logger.debug(f"the best model is not changed")
     return False
 
 
-def reload_newest_next_generation_model_if_changed(model):
+def reload_newest_next_generation_model_if_changed(model, clear_session=False):
     """
 
     :param reversi_zero.agent.model.ReversiModel model:
+    :param bool clear_session:
     :return:
     """
     from reversi_zero.lib.data_helper import get_next_generation_model_dirs
@@ -63,6 +68,9 @@ def reload_newest_next_generation_model_if_changed(model):
     digest = model.fetch_digest(weight_path)
     if digest != model.digest:
         logger.debug(f"Loading weight from {model_dir}")
+        if clear_session:
+            K.clear_session()
         return model.load(config_path, weight_path)
     else:
-        return logger.debug("The newest model is not changed.")
+        logger.debug("The newest model is not changed.")
+        return False

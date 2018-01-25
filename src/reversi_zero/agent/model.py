@@ -1,7 +1,6 @@
 import hashlib
 import json
 import os
-import time
 from logging import getLogger
 # noinspection PyPep8Naming
 import keras.backend as K
@@ -83,17 +82,11 @@ class ReversiModel:
     def load(self, config_path, weight_path):
         if os.path.exists(config_path) and os.path.exists(weight_path):
             logger.debug(f"loading model from {config_path}")
-            for i in range(5):
-                try:
-                    with open(config_path, "rt") as f:
-                        self.model = Model.from_config(json.load(f))
-                    self.model.load_weights(weight_path)
-                    self.digest = self.fetch_digest(weight_path)
-                    logger.debug(f"loaded model digest = {self.digest}")
-                    break
-                except:
-                    time.sleep(1)
-                    continue
+            with open(config_path, "rt") as f:
+                self.model = Model.from_config(json.load(f))
+            self.model.load_weights(weight_path)
+            self.digest = self.fetch_digest(weight_path)
+            logger.debug(f"loaded model digest = {self.digest}")
             return True
         else:
             logger.debug(f"model files does not exist at {config_path} and {weight_path}")

@@ -110,9 +110,9 @@ class Frame(wx.Frame):
             y = 7-y
 
         #if not self.model.available(x, y):
-        #   return
-        self.model.move(x, y,use_edax=True)
+        #    return
 
+        self.model.move(x, y,use_edax=True)
         self.model.play_next_turn()
 
     def game_over(self):
@@ -127,6 +127,7 @@ class Frame(wx.Frame):
         notify("game is over", mes)
         self.model.edax_player.close()
         self.model.edax_player.engine_init()
+
         # elif self.reversi.passed != None:
         #     notify("passing turn", "pass")
 

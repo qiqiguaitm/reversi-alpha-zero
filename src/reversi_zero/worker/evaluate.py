@@ -55,6 +55,7 @@ class EvaluateWorker:
                 ng_win, black_is_best, black_white = self.play_game(self.best_model, ng_model)
             except:
                 continue
+            #ng_win, black_is_best, black_white = self.play_game(self.best_model, ng_model)
             if ng_win is not None:
                 results.append(ng_win)
                 winning_rate = sum(results) / len(results)
@@ -71,13 +72,12 @@ class EvaluateWorker:
         logger.debug(f"winning rate {winning_rate*100:.1f}%")
         return winning_rate >= self.config.eval.replace_rate
 
-
     def play_game(self, best_model, ng_model):
         env = ReversiEnv().reset()
+
         #best_player = ReversiPlayer(self.config, best_model, play_config=self.config.eval.play_config)
         best_player = EdaxPlayer()
-        ng_player = ReversiPlayer(self.config, ng_model, play_config=self.config.eval.play_config,
-                                  enable_resign=False)
+        ng_player = ReversiPlayer(self.config, ng_model, play_config=self.config.eval.play_config)
         best_is_black = random() < 0.5
         if best_is_black:
             black, white = best_player, ng_player

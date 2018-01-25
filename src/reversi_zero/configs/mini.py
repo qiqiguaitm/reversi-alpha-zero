@@ -19,11 +19,14 @@ class PlayDataConfig:
 class PlayConfig:
     def __init__(self):
         self.simulation_num_per_move = 10
+        self.share_mtcs_info_in_self_play = True
+        self.reset_mtcs_info_per_game = 10
         self.thinking_loop = 1
         self.logging_thinking = False
         self.c_puct = 5
         self.noise_eps = 0.25
         self.dirichlet_alpha = 0.5
+        self.dirichlet_noise_only_for_legal_moves = True
         self.change_tau_turn = 10
         self.virtual_loss = 3
         self.prediction_queue_size = 16
@@ -31,10 +34,15 @@ class PlayConfig:
         self.prediction_worker_sleep_sec  = 0.00001
         self.wait_for_expanding_sleep_sec = 0.000001
         self.resign_threshold = -0.8
+        self.allowed_resign_turn = 30
         self.disable_resignation_rate = 0.1
         self.false_positive_threshold = 0.05
         self.resign_threshold_delta = 0.01
         self.use_newest_next_generation_model = True
+        self.simulation_num_per_move_schedule = [
+            (300, 8),
+            (500, 20),
+        ]
 
 
 class TrainerConfig:
@@ -44,6 +52,11 @@ class TrainerConfig:
         self.epoch_to_checkpoint = 1
         self.start_total_steps = 0
         self.save_model_steps = 200
+        self.lr_schedules = [
+            (0, 0.01),
+            (100000, 0.001),
+            (200000, 0.0001)
+        ]
 
 
 class ModelConfig:
