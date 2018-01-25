@@ -15,7 +15,7 @@ class PlayDataConfig:
     def __init__(self):
         # Max Training Data Size = nb_game_in_file * max_file_num * 8
         self.nb_game_in_file = 5
-        self.max_file_num = 300
+        self.max_file_num = 1000
         self.save_policy_of_tau_1 = True
 
 
@@ -56,7 +56,7 @@ class PlayConfig:
 
 class TrainerConfig:
     def __init__(self):
-        self.batch_size = 256  # 2048
+        self.batch_size = 2048  # 2048
         self.min_data_size_to_learn = 100000
         self.epoch_to_checkpoint = 1
         self.start_total_steps = 0
