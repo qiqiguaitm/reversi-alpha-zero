@@ -60,9 +60,9 @@ class SelfPlayWorker:
                     reload_newest_next_generation_model_if_changed(self.model, clear_session=True)
                 else:
                     reload_best_model_weight_if_changed(self.model, clear_session=True)
-
             except Exception as e:
                 logger.error(e)
+
 
             if idx % self.config.play.reset_mtcs_info_per_game == 0:
                 logger.debug("reset MTCS info")

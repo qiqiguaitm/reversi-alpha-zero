@@ -3,6 +3,7 @@ from logging import getLogger
 import keras.backend as K
 import shutil
 import time
+import uuid
 
 logger = getLogger(__name__)
 

@@ -2,6 +2,7 @@ import os
 from datetime import datetime
 from logging import getLogger
 from time import sleep
+import shutil
 
 import keras.backend as K
 import numpy as np
@@ -114,10 +115,13 @@ class OptimizeWorker:
         rc = self.config.resource
         model_id = datetime.now().strftime("%Y%m%d-%H%M%S.%f")
         model_dir = os.path.join(rc.next_generation_model_dir, rc.next_generation_model_dirname_tmpl % model_id)
-        os.makedirs(model_dir, exist_ok=True)
-        config_path = os.path.join(model_dir, rc.next_generation_model_config_filename)
-        weight_path = os.path.join(model_dir, rc.next_generation_model_weight_filename)
+        tmp_model_dir = os.path.join(rc.next_generation_model_dir, 'tmp_'+rc.next_generation_model_dirname_tmpl % model_id)
+        os.makedirs(tmp_model_dir, exist_ok=True)
+        config_path = os.path.join(tmp_model_dir, rc.next_generation_model_config_filename)
+        weight_path = os.path.join(tmp_model_dir, rc.next_generation_model_weight_filename)
         self.model.save(config_path, weight_path)
+        shutil.move(tmp_model_dir,model_dir)
+
 
     def collect_all_loaded_data(self):
         state_ary_list, policy_ary_list, z_ary_list = [], [], []
