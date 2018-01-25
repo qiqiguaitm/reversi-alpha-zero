@@ -55,13 +55,15 @@ class SelfPlayWorker:
             logger.debug(f"play game {idx} time={end_time - start_time} sec, "
                          f"turn={env.turn}:{env.board.number_of_black_and_white}:{env.winner}")
 
-            try:
-                if self.config.play.use_newest_next_generation_model:
-                    reload_newest_next_generation_model_if_changed(self.model, clear_session=True)
-                else:
-                    reload_best_model_weight_if_changed(self.model, clear_session=True)
-            except Exception as e:
-                logger.error(e)
+            while True:
+                try:
+                    if self.config.play.use_newest_next_generation_model:
+                        reload_newest_next_generation_model_if_changed(self.model, clear_session=True)
+                    else:
+                        reload_best_model_weight_if_changed(self.model, clear_session=True)
+                    break
+                except Exception as e:
+                    logger.error(e)
 
 
             if idx % self.config.play.reset_mtcs_info_per_game == 0:
