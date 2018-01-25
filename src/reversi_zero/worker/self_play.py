@@ -91,7 +91,10 @@ class SelfPlayWorker:
             observation, info = self.env.step(action)
         self.finish_game(resign_enabled=enable_resign)
         self.save_play_data(write=idx % self.config.play_data.nb_game_in_file == 0)
-        self.remove_play_data()
+        try:
+            self.remove_play_data()
+        except:
+            continue
         return self.env
 
     def save_play_data(self, write=True):
