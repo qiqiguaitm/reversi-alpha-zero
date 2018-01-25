@@ -81,6 +81,7 @@ class OptimizeWorker:
     def compile_model(self):
         self.optimizer = SGD(lr=1e-2, momentum=0.9)
         losses = [objective_function_for_policy, objective_function_for_value]
+        self.model.model.compile(optimizer=self.optimizer, loss=losses)
         self.model.multi_model.compile(optimizer=self.optimizer, loss=losses)
 
     def update_learning_rate(self, total_steps):
