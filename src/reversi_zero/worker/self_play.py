@@ -94,7 +94,7 @@ class SelfPlayWorker:
         try:
             self.remove_play_data()
         except:
-            continue
+            None
         return self.env
 
     def save_play_data(self, write=True):
