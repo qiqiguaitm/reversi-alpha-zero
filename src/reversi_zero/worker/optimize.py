@@ -122,7 +122,6 @@ class OptimizeWorker:
         os.makedirs(tmp_model_dir, exist_ok=True)
         config_path = os.path.join(tmp_model_dir, rc.next_generation_model_config_filename)
         weight_path = os.path.join(tmp_model_dir, rc.next_generation_model_weight_filename)
-        self.model.model.set_weights(self.model.multi_model.get_weights())
         self.model.save(config_path, weight_path)
         shutil.move(tmp_model_dir,model_dir)
 
