@@ -37,8 +37,7 @@ class OptimizeWorker:
         self.optimizer = None
 
     def start(self):
-        with tf.device("/cpu:0"):
-            self.model = self.load_model()
+        self.model = self.load_model()
         self.model.multi_model = multi_gpu_model(self.model.model, gpus=4)
         self.training()
 
@@ -82,7 +81,6 @@ class OptimizeWorker:
     def compile_model(self):
         self.optimizer = SGD(lr=1e-2, momentum=0.9)
         losses = [objective_function_for_policy, objective_function_for_value]
-        self.model.model.compile(optimizer=self.optimizer, loss=losses)
         self.model.multi_model.compile(optimizer=self.optimizer, loss=losses)
 
     def update_learning_rate(self, total_steps):
