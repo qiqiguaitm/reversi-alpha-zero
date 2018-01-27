@@ -56,11 +56,11 @@ class PlayConfig:
 
 class TrainerConfig:
     def __init__(self):
-        self.batch_size = 4096  # 2048
+        self.batch_size = 2048  # 2048
         self.min_data_size_to_learn = 100000
         self.epoch_to_checkpoint = 1
         self.start_total_steps = 0
-        self.save_model_steps = 200
+        self.save_model_steps = 50
         self.use_tensorboard = True
         self.logging_per_steps = 100
         self.lr_schedules = [
