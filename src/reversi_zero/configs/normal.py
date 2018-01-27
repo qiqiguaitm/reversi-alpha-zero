@@ -44,9 +44,9 @@ class PlayConfig:
 
         #
         self.schedule_of_simulation_num_per_move = [
-            (0, 8),
-            (300, 100),
-            (2000, 400),
+            (0, 8*4),
+            (300, 100*4),
+            (2000, 400*4),
         ]
 
         # True means evaluating 'AlphaZero' method (disable 'eval' worker).
