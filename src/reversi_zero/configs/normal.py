@@ -49,6 +49,7 @@ class PlayConfig:
             (2000, 400),
             (20000, 800),
             (200000, 1600),
+            (2000000, 3200),
         ]
 
         # True means evaluating 'AlphaZero' method (disable 'eval' worker).
