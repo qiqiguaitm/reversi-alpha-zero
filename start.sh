@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+rm out.*
 rm ~/data/* -fr
 rm logs/* -fr
 ps aux | grep -i python | awk '{system("kill "$2)}'
