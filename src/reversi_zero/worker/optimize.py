@@ -208,7 +208,6 @@ class OptimizeWorker:
             state_list.append([own, enemy])
             policy_list.append(policy)
             z_list.append(z)
-
         return np.array(state_list), np.array(policy_list), np.array(z_list)
 
 

@@ -76,6 +76,6 @@ class TrainerConfig:
 class ModelConfig:
     cnn_filter_num = 256
     cnn_filter_size = 3
-    res_layer_num = 30
+    res_layer_num = 40
     l2_reg = 1e-4
     value_fc_size = 256
