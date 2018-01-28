@@ -15,7 +15,7 @@ class PlayDataConfig:
     def __init__(self):
         # Max Training Data Size = nb_game_in_file * max_file_num * 8
         self.nb_game_in_file = 5
-        self.max_file_num = 1000
+        self.max_file_num = 200
         self.save_policy_of_tau_1 = True
 
 
@@ -30,7 +30,7 @@ class PlayConfig:
         self.noise_eps = 0.25
         self.dirichlet_alpha = 0.5
         self.dirichlet_noise_only_for_legal_moves = True
-        self.change_tau_turn = 3
+        self.change_tau_turn = 10
         self.virtual_loss = 3
         self.prediction_queue_size = 16
         self.parallel_search_num = 8
@@ -76,6 +76,6 @@ class TrainerConfig:
 class ModelConfig:
     cnn_filter_num = 256
     cnn_filter_size = 3
-    res_layer_num = 10
+    res_layer_num = 30
     l2_reg = 1e-4
     value_fc_size = 256
